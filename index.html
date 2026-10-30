@@ -1,1232 +1,428 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Física - Prof. Jouilson</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #06b6d4;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --border: #334155;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Física - Prof. Jouilson</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#1e293b;
+      --border:#334155;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --primary:#4f46e5;
+      --accent:#06b6d4;
+      --success:#10b981;
+      --warning:#f59e0b;
+      --danger:#ef4444;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    header{
+      background:rgba(30,41,59,0.95);
+      border-bottom:1px solid var(--border);
+      padding:0.9rem 1.25rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:0.75rem;
+      flex-wrap:wrap;
+    }
 
-        header {
-            background: rgba(30, 41, 59, 0.95);
-            border-bottom: 1px solid var(--border);
-            padding: 0.9rem 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
+    .logo{
+      font-size:1.05rem;
+      font-weight:700;
+      color:var(--accent);
+      cursor:pointer;
+    }
 
-        .logo {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--accent);
-            cursor: pointer;
-        }
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:0.5rem;
+      flex-wrap:wrap;
+    }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
+    .nav-btn, .btn{
+      border:none;
+      border-radius:8px;
+      padding:0.6rem 0.9rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.2s;
+    }
 
-        .user-info-badge {
-            background: var(--border);
-            padding: 0.35rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            display: none;
-            color: #fff;
-            font-weight: 500;
-        }
+    .nav-btn{
+      background:#0f172a;
+      color:var(--muted);
+      border:1px solid var(--border);
+    }
 
-        .nav-btn {
-            background: #0f172a;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 0.35rem 0.75rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .nav-btn:hover, .nav-btn.active{
+      color:#fff;
+      border-color:var(--accent);
+      background:rgba(6,182,212,0.15);
+    }
 
-        .nav-btn:hover, .nav-btn.active {
-            color: #fff;
-            border-color: var(--accent);
-            background: rgba(6, 182, 212, 0.15);
-        }
+    .btn{
+      background:var(--primary);
+      color:#fff;
+      width:auto;
+    }
 
-        main {
-            flex: 1;
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 1rem;
-        }
+    .btn:hover{
+      opacity:0.95;
+    }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1rem;
+    }
 
-        h1 { font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem; }
-        h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 0.8rem; }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:1.25rem;
+      margin-bottom:1.5rem;
+    }
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
+    .hidden{ display:none !important; }
 
-        label {
-            display: block;
-            margin-bottom: 0.4rem;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
+    .notice{
+      margin-bottom:1rem;
+      padding:0.8rem 1rem;
+      border-radius:8px;
+      display:none;
+    }
 
-        input, select {
-            width: 100%;
-            padding: 0.7rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #0f172a;
-            color: #fff;
-            font-size: 0.95rem;
-            outline: none;
-        }
+    .notice.warning{
+      background:rgba(245,158,11,0.15);
+      border:1px solid var(--warning);
+      color:#fde68a;
+      display:block;
+    }
 
-        input:focus, select:focus {
-            border-color: var(--accent);
-        }
+    .notice.success{
+      background:rgba(16,185,129,0.15);
+      border:1px solid var(--success);
+      color:#a7f3d0;
+      display:block;
+    }
 
-        .ql-toolbar.ql-snow {
-            background: #1e293b;
-            border-color: var(--border) !important;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-        }
+    .notice.error{
+      background:rgba(239,68,68,0.15);
+      border:1px solid var(--danger);
+      color:#fecaca;
+      display:block;
+    }
 
-        .ql-container.ql-snow {
-            background: #0f172a;
-            color: #fff;
-            border-color: var(--border) !important;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            min-height: 260px;
-        }
+    .student-form{
+      display:grid;
+      gap:1rem;
+    }
 
-        .ql-snow .ql-stroke { stroke: var(--text-muted); }
-        .ql-snow .ql-fill { fill: var(--text-muted); }
-        .ql-snow .ql-picker { color: var(--text-muted); }
+    label{
+      display:block;
+      margin-bottom:0.4rem;
+      color:var(--muted);
+      font-size:0.9rem;
+    }
 
-        .btn {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-            display: block;
-            margin-top: 0.5rem;
-            transition: opacity 0.2s;
-        }
+    input, select{
+      width:100%;
+      background:#0f172a;
+      color:#fff;
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:0.75rem;
+      font-size:1rem;
+    }
 
-        .btn:hover { opacity: 0.92; }
-        .btn-success { background: var(--success); }
-        .btn-warning { background: var(--warning); color: #000; }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 0.45rem 0.75rem;
-            font-size: 0.8rem;
-            margin-top: 0;
-            width: auto;
-            display: inline-block;
-        }
+    .small{
+      font-size:0.85rem;
+      color:var(--muted);
+    }
 
-        .workspace-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
+    .professor-area{
+      display:none;
+    }
 
-        @media(min-width: 768px) {
-            .workspace-grid { grid-template-columns: 1.2fr 0.8fr; }
-        }
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.7);
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:1rem;
+    }
 
-        .chat-box {
-            display: flex;
-            flex-direction: column;
-            height: 420px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: #0b1120;
-            overflow: hidden;
-        }
+    .modal.hidden{
+      display:none !important;
+    }
 
-        .chat-messages {
-            flex: 1;
-            padding: 0.8rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
+    .modal-card{
+      width:min(420px, 100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:1.5rem;
+      box-shadow:0 20px 40px rgba(0,0,0,0.4);
+    }
 
-        .message {
-            max-width: 85%;
-            padding: 0.6rem 0.8rem;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
+    .modal-card h2{
+      margin:0 0 0.8rem;
+      color:#fff;
+    }
 
-        .message.other { background: var(--border); align-self: flex-start; }
-        .message.me { background: var(--primary); align-self: flex-end; }
+    .modal-card p{
+      margin:0 0 1rem;
+      color:var(--muted);
+      font-size:0.9rem;
+    }
 
-        .message-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 0.5rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 0.2rem;
-        }
+    .modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:0.75rem;
+      margin-top:1rem;
+    }
 
-        .message.me .message-header { color: #e0e7ff; }
-
-        .chat-input-area {
-            display: flex;
-            padding: 0.5rem;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border);
-            gap: 0.4rem;
-        }
-
-        .badge-tag {
-            display: inline-block;
-            background: rgba(6, 182, 212, 0.15);
-            color: var(--accent);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-            margin-right: 0.3rem;
-        }
-
-        .hidden { display: none !important; }
-
-        .guide-box {
-            background: rgba(6, 182, 212, 0.05);
-            border: 1px dashed var(--accent);
-            padding: 0.9rem;
-            margin-top: 0.8rem;
-            font-size: 0.82rem;
-            border-radius: 8px;
-        }
-
-        .titles-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            padding: 0.9rem;
-            margin-top: 0.8rem;
-            font-size: 0.82rem;
-            border-radius: 8px;
-        }
-
-        .title-pill {
-            display: block;
-            width: 100%;
-            text-align: left;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            margin-top: 0.4rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .title-pill:hover, .title-pill.selected {
-            border-color: var(--accent);
-            background: rgba(6, 182, 212, 0.12);
-            color: #fff;
-        }
-
-        .team-limit-info {
-            font-size: 0.78rem;
-            color: var(--accent);
-            margin-top: 0.35rem;
-        }
-
-        .team-members-box {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid var(--success);
-            padding: 0.8rem;
-            margin-top: 0.8rem;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .notice-banner {
-            padding: 0.85rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .notice-banner.warning { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warning); color: #fde68a; }
-        .notice-banner.success { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); color: #a7f3d0; }
-        .notice-banner.error { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fecaca; }
-
-        .check-item {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-            margin-top: 0.35rem;
-            color: var(--text-muted);
-        }
-
-        .check-item.done { color: var(--success); font-weight: 600; }
-
-        .ai-feedback-box {
-            background: #0f172a;
-            border: 1px solid var(--warning);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-size: 0.82rem;
-        }
-
-        .teacher-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        @media(min-width: 768px) {
-            .teacher-grid { grid-template-columns: 1fr 1fr; }
-        }
-
-        @media print {
-            header, .no-print { display: none !important; }
-            body { background: #fff !important; color: #000 !important; }
-            .card, #summaryReport {
-                background: #fff !important;
-                color: #000 !important;
-                border: 1px solid #ccc !important;
-                box-shadow: none !important;
-            }
-        }
-    </style>
+    @media(max-width:768px){
+      header{
+        justify-content:center;
+      }
+    }
+  </style>
 </head>
-
 <body>
-    <header>
-        <div class="logo" onclick="mostrarAba('portal')">⚡ Lab Física | Prof. Jouilson</div>
-        <div class="header-actions">
-            <div id="userBadge" class="user-info-badge"></div>
-            <button type="button" id="btnTabPortal" class="nav-btn active" onclick="mostrarAba('portal')">Sala da Equipe</button>
-            <button type="button" id="btnTabProfessor" class="nav-btn" onclick="mostrarAba('professor')">Painel do Professor</button>
-            <button type="button" id="logoutBtn" class="nav-btn hidden" onclick="trocarAluno()">Trocar Aluno</button>
+  <header>
+    <div class="logo" onclick="mostrarAba('portal')">⚡ Lab Física | Prof. Jouilson</div>
+
+    <div class="header-actions">
+      <button type="button" id="btnTabPortal" class="nav-btn active" onclick="mostrarAba('portal')">
+        Sala da Equipe
+      </button>
+
+      <button type="button" id="btnTabProfessor" class="nav-btn" onclick="abrirModalProfessor()" style="display:none;">
+        Painel do Professor
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div id="noticeBanner" class="notice"></div>
+
+    <div id="tabPortal">
+      <section class="card">
+        <h1>Portal de Trabalhos em Grupo</h1>
+        <p class="small">Preencha o seu nome e entre na mesma equipe dos seus colegas.</p>
+
+        <div class="student-form">
+          <div>
+            <label for="studentName">Nome do Aluno:</label>
+            <input id="studentName" type="text" placeholder="Ex: Ana Silva" />
+          </div>
+
+          <div>
+            <label for="gradeSelect">Selecione a sua Turma:</label>
+            <select id="gradeSelect">
+              <option value="">-- Selecionar Turma --</option>
+              <option value="9">9º Ano</option>
+              <option value="1">1º Ano</option>
+              <option value="2">2º Ano</option>
+              <option value="3">3º Ano</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="teamSelect">Selecione a Equipe:</label>
+            <select id="teamSelect">
+              <option value="">-- Selecione a turma primeiro --</option>
+            </select>
+          </div>
+
+          <button type="button" class="btn" onclick="entrarNaSala()">Entrar na Sala da Equipe</button>
         </div>
-    </header>
+      </section>
+    </div>
 
-    <main>
-        <div id="noticeBanner" class="notice-banner hidden">
-            <span id="noticeText"></span>
-            <button type="button" onclick="fecharAviso()" style="background:transparent;border:none;color:inherit;cursor:pointer;font-weight:700;">✕</button>
-        </div>
+    <section id="tabProfessor" class="card professor-area">
+      <h1>👨‍🏫 Painel do Professor Jouilson</h1>
+      <p class="small">Este painel está restrito ao professor.</p>
+      <p class="small">Se você chegou aqui, a senha estava correta.</p>
+    </section>
+  </main>
 
-        <div id="tabPortal">
-            <section id="loginSection" class="card">
-                <h1>Portal de Trabalhos em Grupo</h1>
-                <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.9rem;">Preencha o seu nome e entre na mesma equipe dos seus colegas.</p>
+  <div id="modalProfessor" class="modal hidden">
+    <div class="modal-card">
+      <h2>Acesso restrito</h2>
+      <p>Digite a senha do professor para acessar o painel.</p>
 
-                <div class="form-group">
-                    <label for="studentName">Nome do Aluno:</label>
-                    <input type="text" id="studentName" placeholder="Ex: Ana Silva">
-                </div>
+      <label for="senhaProfessor">Senha:</label>
+      <input id="senhaProfessor" type="password" placeholder="Digite a senha" />
 
-                <div class="form-group">
-                    <label for="gradeSelect">Selecione a sua Turma:</label>
-                    <select id="gradeSelect" onchange="popularEquipes()">
-                        <option value="">-- Selecionar Turma --</option>
-                        <option value="9">9º Ano (Ondas, Espectro e Radioatividade - Máx: 3)</option>
-                        <option value="1">1º Ano (Dinâmica e Gravitação - Máx: 2)</option>
-                        <option value="2">2º Ano (Acústica - Máx: 2)</option>
-                        <option value="3">3º Ano (Eletromagnetismo - Máx: 3)</option>
-                    </select>
-                    <div id="limitInfo" class="team-limit-info"></div>
-                </div>
+      <div class="modal-actions">
+        <button type="button" class="nav-btn" onclick="fecharModalProfessor()">Cancelar</button>
+        <button type="button" class="btn" onclick="validarSenhaProfessor()">Entrar</button>
+      </div>
+    </div>
+  </div>
 
-                <div class="form-group">
-                    <label for="teamSelect">Selecione a Equipe (1 a 5):</label>
-                    <select id="teamSelect" onchange="mostrarPreviaSubtema()">
-                        <option value="">-- Selecione a Turma Primeiro --</option>
-                    </select>
-                    <div id="topicPreviewBox" class="team-limit-info" style="color: var(--text-muted); margin-top: 0.45rem;"></div>
-                </div>
+  <script>
+    const PROFESSOR_ACCESS_KEY = "portal_professor_access";
+    const PROFESSOR_PASSWORD = "professor123";
 
-                <button type="button" id="enterBtn" class="btn" onclick="entrarNaSala()">Entrar na Sala da Equipe 🚀</button>
-            </section>
+    function mostrarAviso(texto, tipo = "warning") {
+      const banner = document.getElementById("noticeBanner");
+      banner.className = "notice " + tipo;
+      banner.textContent = texto;
+    }
 
-            <section id="workspaceSection" class="hidden">
-                <div class="card">
-                    <div>
-                        <span class="badge-tag" id="gradeBadge">TURMA</span>
-                        <span class="badge-tag" id="teamBadge" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">EQUIPE</span>
-                    </div>
-                    <h1 id="topicTitle">Subtema</h1>
-                    <p id="topicDescription" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem;"></p>
+    function professorTemAcesso() {
+      return localStorage.getItem(PROFESSOR_ACCESS_KEY) === "true";
+    }
 
-                    <div class="team-members-box">
-                        <div>
-                            <strong>👥 Colegas na mesma Equipe:</strong>
-                            <span id="teamMembersList" style="color: var(--text); font-weight: 600; margin-left: 0.3rem;"></span>
-                        </div>
-                        <span id="teamCapacityBadge" style="font-size: 0.75rem; color: var(--success); font-weight: 600;"></span>
-                    </div>
+    function liberarAcessoProfessor() {
+      localStorage.setItem(PROFESSOR_ACCESS_KEY, "true");
+    }
 
-                    <div class="titles-box">
-                        <strong>💡 4 Opções de Título Sugeridas (clique em uma opção para escolher):</strong>
-                        <div id="suggestedTitlesList"></div>
-                    </div>
+    function abrirModalProfessor() {
+      const modal = document.getElementById("modalProfessor");
+      const senhaInput = document.getElementById("senhaProfessor");
 
-                    <div class="guide-box">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                            <strong>🔍 Roteiro Obrigatório (3 Subtítulos):</strong>
-                            <button type="button" class="btn btn-outline" onclick="inserirRoteiroPadrao()">+ Inserir os 3 Subtítulos no Editor</button>
-                        </div>
-                        <p style="margin-top: 0.4rem; color: var(--text-muted);">Dividam as tarefas entre os membros do grupo utilizando exatamente estes 3 subtítulos:</p>
-                        <div id="checkIntro" class="check-item">⬜ <span><strong>1. Introdução Teórica:</strong> O conceito físico fundamental e suas classificações/leis.</span></div>
-                        <div id="checkApp" class="check-item">⬜ <span><strong>2. Aplicação Tecnológica e Prática:</strong> Como isso aparece no dia a dia ou em tecnologias modernas.</span></div>
-                        <div id="checkConc" class="check-item">⬜ <span><strong>3. Conclusão Crítica:</strong> Considerações do grupo sobre a importância do tema.</span></div>
-                    </div>
-                </div>
+      if (modal) {
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          if (senhaInput) senhaInput.focus();
+        }, 100);
+      }
+    }
 
-                <div class="workspace-grid">
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
-                            <h2 style="margin-bottom: 0;">📝 Editor Estilo Docs do Grupo</h2>
-                            <span id="wordCountBadge" style="font-size: 0.75rem; color: var(--text-muted);">0 palavras</span>
-                        </div>
-                        <p style="font-size: 0.8rem; color: var(--warning); margin-bottom: 0.8rem;">⚠️ Formate o texto com negrito, listas ou títulos. Clique em "Salvar Rascunho" para sincronizar com a equipe!</p>
+    function fecharModalProfessor() {
+      const modal = document.getElementById("modalProfessor");
+      const senhaInput = document.getElementById("senhaProfessor");
 
-                        <div class="form-group">
-                            <label for="workTitle">Título do Trabalho:</label>
-                            <input type="text" id="workTitle" placeholder="Digite ou clique em um dos títulos sugeridos acima">
-                        </div>
+      if (modal) modal.classList.add("hidden");
+      if (senhaInput) senhaInput.value = "";
+    }
 
-                        <div class="form-group">
-                            <label>Desenvolvimento Coletivo:</label>
-                            <div id="editor-container"></div>
-                        </div>
+    function validarSenhaProfessor() {
+      const senhaInput = document.getElementById("senhaProfessor");
+      const senha = senhaInput ? senhaInput.value.trim() : "";
 
-                        <div id="saveStatusInfo" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;"></div>
+      if (senha === PROFESSOR_PASSWORD) {
+        liberarAcessoProfessor();
+        const btnProfessor = document.getElementById("btnTabProfessor");
+        if (btnProfessor) btnProfessor.style.display = "inline-block";
 
-                        <button type="button" id="saveDraftBtn" class="btn btn-warning">💾 Salvar Rascunho para a Equipe</button>
-                        <button type="button" id="evaluateBtn" class="btn" style="background: #eab308; color: #000;">🤖 Pré-Avaliar com IA</button>
-                        <button type="button" id="submitBtn" class="btn btn-success">📩 Enviar Relatório ao Professor</button>
+        fecharModalProfessor();
+        mostrarAba("professor");
+        mostrarAviso("Acesso liberado para o professor.", "success");
+      } else {
+        mostrarAviso("Senha incorreta. Acesso negado.", "error");
+        if (senhaInput) senhaInput.focus();
+      }
+    }
 
-                        <div id="aiFeedbackBox" class="ai-feedback-box hidden"></div>
-                    </div>
+    function inicializarBotaoProfessor() {
+      const btnProfessor = document.getElementById("btnTabProfessor");
+      if (!btnProfessor) return;
 
-                    <div class="card">
-                        <h2>💬 Chat da Equipe</h2>
-                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Converse e combine a divisão dos 3 subtítulos com os colegas do grupo.</p>
-                        <div class="chat-box">
-                            <div class="chat-messages" id="chatMessages"></div>
-                            <div class="chat-input-area">
-                                <input type="text" id="chatInput" placeholder="Digite sua mensagem e pressione Enter...">
-                                <button type="button" id="sendChatBtn" class="btn" style="width: auto; padding: 0.5rem 1rem; margin-top: 0;">Enviar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+      if (professorTemAcesso()) {
+        btnProfessor.style.display = "inline-block";
+      } else {
+        btnProfessor.style.display = "none";
+      }
+    }
 
-            <section id="successSection" class="card hidden" style="text-align: center;">
-                <h1 style="color: var(--success);">🎉 Trabalho da Equipe Registrado!</h1>
-                <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Relatório pronto para envio ao Prof. Jouilson.</p>
+    function mostrarAba(aba) {
+      const tabPortal = document.getElementById("tabPortal");
+      const tabProfessor = document.getElementById("tabProfessor");
+      const btnPortal = document.getElementById("btnTabPortal");
+      const btnProfessor = document.getElementById("btnTabProfessor");
 
-                <div id="summaryReport" style="background: #0f172a; padding: 1.2rem; border-radius: 8px; text-align: left; margin-bottom: 1rem; font-size: 0.88rem; border: 1px solid var(--border);"></div>
-
-                <div class="no-print">
-                    <button type="button" id="emailBtn" class="btn btn-success">📧 Enviar para profjouilson@gmail.com</button>
-                    <button type="button" onclick="copiarRelatorio()" class="btn" style="background: var(--accent); color: #000;">📋 Copiar Texto Completo do Relatório</button>
-                    <button type="button" onclick="window.print()" class="btn" style="background: var(--border);">🖨️ Salvar PDF / Imprimir</button>
-                    <button type="button" onclick="voltarParaEditor()" class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted);">⬅️ Voltar ao Editor da Equipe</button>
-                </div>
-            </section>
-        </div>
-
-        <section id="tabProfessor" class="card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                <div>
-                    <h1>👨‍🏫 Painel do Professor Jouilson</h1>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">Visualize as equipes, rascunhos salvos e libere vagas caso algum aluno tenha se cadastrado na equipe errada.</p>
-                </div>
-                <select id="teacherGradeFilter" onchange="renderizarPainelProfessor()" style="width: auto; min-width: 220px;">
-                    <option value="9">9º Ano (Ondas e Radioatividade)</option>
-                    <option value="1">1º Ano (Dinâmica e Gravitação)</option>
-                    <option value="2">2º Ano (Acústica)</option>
-                    <option value="3">3º Ano (Eletromagnetismo)</option>
-                </select>
-            </div>
-            <div id="teacherTeamsContainer" class="teacher-grid"></div>
-        </section>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
-    <script>
-        function readStorage(key, fallback = null) {
-            try {
-                const raw = localStorage.getItem(key);
-                if (raw === null) return fallback;
-                return JSON.parse(raw);
-            } catch (e) {
-                console.warn('Erro ao ler storage:', key, e);
-                return fallback;
-            }
+      if (aba === "professor") {
+        if (!professorTemAcesso()) {
+          mostrarAviso("Acesso restrito ao professor.", "error");
+          return;
         }
 
-        function writeStorage(key, value) {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-                return true;
-            } catch (e) {
-                console.warn('Erro ao salvar storage:', key, e);
-                return false;
-            }
-        }
-
-        function normalizeName(value) {
-            return String(value || '').trim().toLowerCase();
-        }
-
-        function getGroupKey(grade, team) {
-            return `${grade}_${team}`;
-        }
-
-        var quill = new Quill('#editor-container', {
-            theme: 'snow',
-            placeholder: 'Escreva o desenvolvimento do grupo ou clique em "+ Inserir os 3 Subtítulos no Editor"...',
-            modules: {
-                toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['clean']
-                ]
-            }
-        });
-
-        const configTurmas = {
-            9: {
-                name: "9º Ano - Ondas, Espectro Eletromagnético e Radioatividade",
-                maxPerTeam: 3,
-                teams: {
-                    "Equipe 1": {
-                        desc: "Subtema: Classificação, Natureza e Propagação das Ondas.",
-                        titles: ["O Mundo Ondulatório: Classificação e Natureza das Ondas", "Ondas Mecânicas vs Eletromagnéticas: Como se Propagam?", "Entendendo a Propagação das Perturbações no Espaço", "A Física das Ondas ao Nosso Redor"]
-                    },
-                    "Equipe 2": {
-                        desc: "Subtema: Tipo e Duração da Perturbação Provocada pelas Ondas.",
-                        titles: ["Pulso e Perturbação: A Duração das Ondas", "O Impacto do Tipo de Perturbação na Física", "Ondas Transversais e Longitudinais na Prática", "Como as Perturbações Viajam nos Meios"]
-                    },
-                    "Equipe 3": {
-                        desc: "Subtema: Elementos de uma Onda Periódica.",
-                        titles: ["Comprimento de Onda, Frequência e Período", "Anatomia de uma Onda Periódica", "Calculando a Velocidade e os Elementos Ondulatórios", "O Ritmo do Universo: Ondas Periódicas"]
-                    },
-                    "Equipe 4": {
-                        desc: "Subtema: Espectro Eletromagnético e Radiação do Sol.",
-                        titles: ["As Regiões do Espectro Eletromagnético", "A Luz do Sol e suas Radiações Invisíveis", "Do Infravermelho ao Raio-X: O Espectro", "Como a Radiação Solar Influencia a Terra"]
-                    },
-                    "Equipe 5": {
-                        desc: "Subtema: A História da Radioatividade.",
-                        titles: ["A Descoberta da Radioatividade: História e Legado", "Marie Curie e os Pioneiros da Radioatividade", "Dos Raios X aos Fenômenos Nucleares", "A Trajetória Histórica da Radioatividade"]
-                    }
-                }
-            },
-            1: {
-                name: "1º Ano - Leis de Newton e Dinâmica",
-                maxPerTeam: 2,
-                teams: {
-                    "Equipe 1": { desc: "Subtema: 1ª Lei de Newton (Inércia) e aplicações.", titles: ["A Inércia no Quotidiano", "O Princípio da Inércia e a Segurança", "Compreendendo a 1ª Lei de Newton", "Inércia e Movimento"] },
-                    "Equipe 2": { desc: "Subtema: 2ª Lei de Newton (Princípio Fundamental).", titles: ["Força, Massa e Aceleração", "Como a 2ª Lei de Newton Explica o Movimento", "A Matemática por Trás da Dinâmica", "Aplicações de Força e Aceleração"] },
-                    "Equipe 3": { desc: "Subtema: 3ª Lei de Newton (Ação e Reação).", titles: ["Ação e Reação: Toda força gera consequência?", "Como os Foguetes Voam", "Forças Mútuas: Ação e Reação", "O Equilíbrio das Forças"] },
-                    "Equipe 4": { desc: "Subtema: Dinâmica Circular (Força Centrípeta).", titles: ["Curvas Perigosas: Força Centrípeta", "Física dos Carros de Corrida", "Dinâmica Circular nas Estradas", "Aplicações da Força Centrípeta"] },
-                    "Equipe 5": { desc: "Subtema: Lei da Gravitação Universal de Newton.", titles: ["A Gravidade que Move o Universo", "Como os Satélites Mantêm-se em Órbitas", "A Atração entre os Corpos Celestes", "Gravitação Universal e Kepler"] }
-                }
-            },
-            2: {
-                name: "2º Ano - Acústica e Ondas Sonoras",
-                maxPerTeam: 2,
-                teams: {
-                    "Equipe 1": { desc: "Subtema: Natureza das ondas sonoras e velocidade do som.", titles: ["O Som como Onda Mecânica", "A Velocidade do Som nos Meios", "O Mundo Sonoro e Propagação", "Acústica Básica e Ondas"] },
-                    "Equipe 2": { desc: "Subtema: Qualidades fisiológicas do som (Altura e Intensidade).", titles: ["Sons Graves e Agudos", "Volume e Intensidade Sonora", "Como o Ouvido Interpreta o Som", "Altura e Intensidade Diárias"] },
-                    "Equipe 3": { desc: "Subtema: Timbre e Fenômenos Acústicos (Eco e Ressonância).", titles: ["O Timbre dos Instrumentos", "Eco e Reverberação Sonora", "A Ressonância e Amplificação", "Acústica e Reflexão Sonora"] },
-                    "Equipe 4": { desc: "Subtema: Interferência e Difração sonora.", titles: ["Difração das Ondas Sonoras", "Interferência de Ondas", "Fenômenos Ondulatórios na Acústica", "O Comportamento do Som com Barreiras"] },
-                    "Equipe 5": { desc: "Subtema: Efeito Doppler na Acústica e aplicações.", titles: ["Efeito Doppler: A Sirene que Muda de Tom", "Aplicações Médicas do Efeito Doppler", "Movimento e Frequência Sonora", "Por que o Som da Ambulância Altera?"] }
-                }
-            },
-            3: {
-                name: "3º Ano - Magnetismo e Eletromagnetismo",
-                maxPerTeam: 3,
-                teams: {
-                    "Equipe 1": { desc: "Subtema: Ímanes permanentes e linhas de campo magnético.", titles: ["Os Polos Magnéticos", "Linhas de Campo Magnético", "Magnetismo na Tecnologia Atual", "Forças Invisíveis dos Ímanes"] },
-                    "Equipe 2": { desc: "Subtema: Magnetismo Terrestre e a Bússola.", titles: ["A Terra como um Grande Íman", "A Bússola e a Navegação", "Campo Magnético e Proteção Planetária", "Como a Bússola Encontra o Norte"] },
-                    "Equipe 3": { desc: "Subtema: Eletromagnetismo: Experiência de Oersted.", titles: ["Eletricidade Cria Magnetismo", "Solenoides e Eletroímanes", "A Revolução do Eletromagnetismo", "Interação Elétrica e Magnética"] },
-                    "Equipe 4": { desc: "Subtema: Força Magnética sobre cargas elétricas em movimento.", titles: ["Força que Desvia Cargas", "Partículas no Campo Magnético", "Magnetismo e Partículas Eletrizadas", "Física dos Aceleradores"] },
-                    "Equipe 5": { desc: "Subtema: Força Magnética sobre condutores e Motores Elétricos.", titles: ["Motores Elétricos e Física", "Corrente e Força em Condutores", "Transformando Eletricidade em Movimento", "Aplicações Práticas da Força Magnética"] }
-                }
-            }
-        };
-
-        let currentData = { studentName: '', grade: '', team: '', subtopicObj: null, score: null };
-        let editorDirty = false;
-
-        function mostrarAviso(texto, tipo = 'warning') {
-            const banner = document.getElementById('noticeBanner');
-            const span = document.getElementById('noticeText');
-            banner.className = `notice-banner ${tipo}`;
-            span.innerText = texto;
-            banner.classList.remove('hidden');
-        }
-
-        function fecharAviso() {
-            document.getElementById('noticeBanner').classList.add('hidden');
-        }
-
-        function mostrarAba(aba) {
-            const tabPortal = document.getElementById('tabPortal');
-            const tabProf = document.getElementById('tabProfessor');
-            const btnPortal = document.getElementById('btnTabPortal');
-            const btnProf = document.getElementById('btnTabProfessor');
-
-            if (aba === 'professor') {
-                tabPortal.classList.add('hidden');
-                tabProf.classList.remove('hidden');
-                btnPortal.classList.remove('active');
-                btnProf.classList.add('active');
-                renderizarPainelProfessor();
-            } else {
-                tabProf.classList.add('hidden');
-                tabPortal.classList.remove('hidden');
-                btnProf.classList.remove('active');
-                btnPortal.classList.add('active');
-            }
-        }
-
-        function popularEquipes() {
-            const gradeSelect = document.getElementById('gradeSelect');
-            const teamSelect = document.getElementById('teamSelect');
-            const limitInfo = document.getElementById('limitInfo');
-            const topicPreviewBox = document.getElementById('topicPreviewBox');
-            const grade = gradeSelect.value;
-
-            teamSelect.innerHTML = '';
-            topicPreviewBox.innerText = '';
-
-            if (!grade || !configTurmas[grade]) {
-                limitInfo.innerText = '';
-                teamSelect.innerHTML = '<option value="">-- Selecione a Turma Primeiro --</option>';
-                return;
-            }
-
-            const info = configTurmas[grade];
-            limitInfo.innerText = `Limite permitido: ${info.maxPerTeam} alunos por equipe.`;
-
-            let membrosGlobais = readStorage('portal_fisica_membros_globais', {});
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = '';
-            defaultOpt.innerText = '-- Escolha a Equipe (1 a 5) --';
-            teamSelect.appendChild(defaultOpt);
-
-            Object.keys(info.teams).forEach(teamName => {
-                const chave = `${grade}_${teamName}`;
-                const lista = Array.isArray(membrosGlobais[chave]) ? membrosGlobais[chave] : [];
-                const ocupados = lista.length;
-                const opt = document.createElement('option');
-                opt.value = teamName;
-                opt.innerText = `${teamName} (${ocupados}/${info.maxPerTeam} alunos) - ${info.teams[teamName].desc.replace('Subtema: ', '')}`;
-                teamSelect.appendChild(opt);
-            });
-        }
-
-        function mostrarPreviaSubtema() {
-            const grade = document.getElementById('gradeSelect').value;
-            const team = document.getElementById('teamSelect').value;
-            const preview = document.getElementById('topicPreviewBox');
-
-            if (!grade || !team || !configTurmas[grade] || !configTurmas[grade].teams[team]) {
-                preview.innerText = '';
-                return;
-            }
-
-            preview.innerText = `📌 ${configTurmas[grade].teams[team].desc}`;
-        }
-
-        function atualizarListaMembros() {
-            if (!currentData.grade || !currentData.team || !configTurmas[currentData.grade]) return;
-
-            let membrosGlobais = readStorage('portal_fisica_membros_globais', {});
-            let chaveGrupo = getGroupKey(currentData.grade, currentData.team);
-            let lista = Array.isArray(membrosGlobais[chaveGrupo]) ? membrosGlobais[chaveGrupo] : [];
-            lista = [...new Set(lista.filter(Boolean))];
-
-            document.getElementById('teamMembersList').innerText = lista.join(', ') || 'Nenhum colega ainda';
-            const max = configTurmas[currentData.grade].maxPerTeam;
-            document.getElementById('teamCapacityBadge').innerText = `${lista.length}/${max} vagas preenchidas`;
-        }
-
-        function verificarChecklistSubtitulos() {
-            const plain = quill.getText().trim();
-            const lower = plain.toLowerCase();
-            const words = plain.split(/\s+/).filter(Boolean).length;
-            document.getElementById('wordCountBadge').innerText = `${words} palavras`;
-
-            const hasIntro = lower.includes('introdução teórica') || lower.includes('introducao teorica') || lower.includes('1. introdução') || lower.includes('1. introducao');
-            const hasApp = lower.includes('aplicação tecnológica') || lower.includes('aplicacao tecnologica') || lower.includes('2. aplicação') || lower.includes('2. aplicacao');
-            const hasConc = lower.includes('conclusão crítica') || lower.includes('conclusao critica') || lower.includes('3. conclusão') || lower.includes('3. conclusao');
-
-            const elIntro = document.getElementById('checkIntro');
-            const elApp = document.getElementById('checkApp');
-            const elConc = document.getElementById('checkConc');
-
-            elIntro.className = `check-item ${hasIntro ? 'done' : ''}`;
-            elIntro.innerHTML = `${hasIntro ? '✅' : '⬜'} <span><strong>1. Introdução Teórica:</strong> O conceito físico fundamental e suas classificações/leis.</span>`;
-
-            elApp.className = `check-item ${hasApp ? 'done' : ''}`;
-            elApp.innerHTML = `${hasApp ? '✅' : '⬜'} <span><strong>2. Aplicação Tecnológica e Prática:</strong> Como isso aparece no dia a dia ou em tecnologias modernas.</span>`;
-
-            elConc.className = `check-item ${hasConc ? 'done' : ''}`;
-            elConc.innerHTML = `${hasConc ? '✅' : '⬜'} <span><strong>3. Conclusão Crítica:</strong> Considerações do grupo sobre a importância do tema.</span>`;
-        }
-
-        quill.on('text-change', function(delta, oldDelta, source) {
-            if (source === 'user') {
-                editorDirty = true;
-            }
-            verificarChecklistSubtitulos();
-        });
-
-        function inserirRoteiroPadrao() {
-            const htmlAtual = quill.root.innerHTML;
-            const subtema = currentData.subtopicObj ? currentData.subtopicObj.desc : '';
-            const modelo = `
-                <h2>1. Introdução Teórica</h2>
-                <p>Descrevam aqui os conceitos físicos fundamentais sobre <strong>${subtema}</strong>, suas definições e leis.</p>
-                <h2>2. Aplicação Tecnológica e Prática</h2>
-                <p>Expliquem como esse fenômeno aparece no cotidiano ou em tecnologias modernas.</p>
-                <h2>3. Conclusão Crítica</h2>
-                <p>Apresentem a reflexão final da equipe sobre a importância do tema estudado.</p>
-            `;
-
-            if (quill.getText().trim().length === 0) {
-                quill.root.innerHTML = modelo;
-            } else {
-                quill.root.innerHTML = htmlAtual + '<br>' + modelo;
-            }
-
-            editorDirty = true;
-            verificarChecklistSubtitulos();
-            mostrarAviso('Estrutura com os 3 subtítulos inserida no editor!', 'success');
-        }
-
-        function carregarMensagensChat() {
-            if (!currentData.grade || !currentData.team) return;
-
-            const chatKey = `chat_grupo_${currentData.grade}_${currentData.team}`;
-            const mensagens = readStorage(chatKey, []);
-            const chatMessages = document.getElementById('chatMessages');
-
-            if (!chatMessages) return;
-
-            chatMessages.innerHTML = `
-                <div class="message other">
-                    <div class="message-header"><span>Sistema</span></div>
-                    Chat colaborativo da ${currentData.team}. Discutam as ideias do trabalho por aqui!
-                </div>
-            `;
-
-            (Array.isArray(mensagens) ? mensagens : []).forEach(msg => {
-                const div = document.createElement('div');
-                const isMe = normalizeName(msg.author) === normalizeName(currentData.studentName);
-                div.className = `message ${isMe ? 'me' : 'other'}`;
-                div.innerHTML = `
-                    <div class="message-header">
-                        <span>${msg.author || 'Aluno'}</span>
-                        <span>${msg.time || ''}</span>
-                    </div>
-                    <div>${msg.text || ''}</div>
-                `;
-                chatMessages.appendChild(div);
-            });
-
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function renderizarTitulosSugeridos() {
-            const titlesList = document.getElementById('suggestedTitlesList');
-            const tituloAtual = document.getElementById('workTitle').value.trim();
-
-            if (!titlesList || !currentData.subtopicObj || !Array.isArray(currentData.subtopicObj.titles)) {
-                return;
-            }
-
-            titlesList.innerHTML = '';
-
-            currentData.subtopicObj.titles.forEach(t => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = `title-pill ${tituloAtual === t ? 'selected' : ''}`;
-                btn.innerText = `📌 ${t}`;
-                btn.onclick = function() {
-                    document.getElementById('workTitle').value = t;
-                    editorDirty = true;
-                    renderizarTitulosSugeridos();
-                };
-                titlesList.appendChild(btn);
-            });
-        }
-
-        function entrarNaSala() {
-            fecharAviso();
-
-            const name = document.getElementById('studentName').value.trim();
-            const grade = document.getElementById('gradeSelect').value;
-            const team = document.getElementById('teamSelect').value;
-
-            if (!name) {
-                mostrarAviso("Por favor, digite o seu nome!", "warning");
-                return;
-            }
-
-            if (!grade || !configTurmas[grade]) {
-                mostrarAviso("Por favor, selecione a sua turma!", "warning");
-                return;
-            }
-
-            if (!team || !configTurmas[grade].teams[team]) {
-                mostrarAviso("Por favor, selecione a sua equipe!", "warning");
-                return;
-            }
-
-            const alunoKey = `aluno_registrado_${normalizeName(name)}`;
-            const equipeAnterior = readStorage(alunoKey, null);
-
-            if (equipeAnterior) {
-                const dadosAnteriores = equipeAnterior;
-                if (dadosAnteriores.grade !== grade || dadosAnteriores.team !== team) {
-                    mostrarAviso(`⚠️ Olá ${name}! O seu nome já está registrado na ${dadosAnteriores.team} (${dadosAnteriores.grade}º Ano). Selecione sua equipe original ou peça ao professor para liberar no Painel do Professor.`, "warning");
-                    document.getElementById('gradeSelect').value = dadosAnteriores.grade;
-                    popularEquipes();
-                    document.getElementById('teamSelect').value = dadosAnteriores.team;
-                    return;
-                }
-            }
-
-            const info = configTurmas[grade];
-            let membrosGlobais = readStorage('portal_fisica_membros_globais', {});
-            let chaveGrupo = getGroupKey(grade, team);
-
-            if (!Array.isArray(membrosGlobais[chaveGrupo])) {
-                membrosGlobais[chaveGrupo] = [];
-            }
-
-            const jaEstaNaEquipe = membrosGlobais[chaveGrupo].some(m => normalizeName(m) === normalizeName(name));
-
-            if (membrosGlobais[chaveGrupo].length >= info.maxPerTeam && !jaEstaNaEquipe) {
-                mostrarAviso(`A ${team} do ${grade}º Ano já atingiu o limite máximo de ${info.maxPerTeam} alunos!`, "error");
-                return;
-            }
-
-            if (!jaEstaNaEquipe) {
-                membrosGlobais[chaveGrupo].push(name);
-                writeStorage('portal_fisica_membros_globais', membrosGlobais);
-            }
-
-            writeStorage(alunoKey, { grade, team });
-
-            currentData.studentName = name;
-            currentData.grade = grade;
-            currentData.team = team;
-            currentData.subtopicObj = info.teams[team];
-
-            document.getElementById('gradeBadge').innerText = `${grade}º ANO`;
-            document.getElementById('teamBadge').innerText = team;
-            document.getElementById('topicTitle').innerText = info.name;
-            document.getElementById('topicDescription').innerText = `Atribuição: ${currentData.subtopicObj.desc}`;
-
-            atualizarListaMembros();
-
-            const sharedKey = `trabalho_grupo_${grade}_${team}`;
-            const grupoData = readStorage(sharedKey, null);
-
-            if (grupoData) {
-                document.getElementById('workTitle').value = grupoData.title || '';
-                quill.root.innerHTML = grupoData.content || '';
-                currentData.score = grupoData.score || null;
-
-                if (grupoData.savedAt) {
-                    document.getElementById('saveStatusInfo').innerText = `Último salvamento às ${grupoData.savedAt} por ${grupoData.savedBy || 'Colega'}`;
-                }
-            } else {
-                document.getElementById('workTitle').value = '';
-                quill.root.innerHTML = '';
-                currentData.score = null;
-                document.getElementById('saveStatusInfo').innerText = '';
-            }
-
-            editorDirty = false;
-            renderizarTitulosSugeridos();
-            verificarChecklistSubtitulos();
-            carregarMensagensChat();
-
-            document.getElementById('userBadge').innerText = `${name} | ${team}`;
-            document.getElementById('userBadge').style.display = 'inline-block';
-            document.getElementById('logoutBtn').classList.remove('hidden');
-
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('successSection').classList.add('hidden');
-            document.getElementById('workspaceSection').classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        function trocarAluno() {
-            currentData = { studentName: '', grade: '', team: '', subtopicObj: null, score: null };
-            document.getElementById('userBadge').style.display = 'none';
-            document.getElementById('logoutBtn').classList.add('hidden');
-            document.getElementById('workspaceSection').classList.add('hidden');
-            document.getElementById('successSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
-            popularEquipes();
-        }
-
-        setInterval(() => {
-            if (currentData.grade && currentData.team) {
-                atualizarListaMembros();
-                carregarMensagensChat();
-
-                const sharedKey = `trabalho_grupo_${currentData.grade}_${currentData.team}`;
-                const grupoData = readStorage(sharedKey, null);
-
-                if (grupoData && !editorDirty) {
-                    const titleInput = document.getElementById('workTitle');
-                    if (titleInput && titleInput.value !== (grupoData.title || '') && document.activeElement !== titleInput) {
-                        titleInput.value = grupoData.title || '';
-                        renderizarTitulosSugeridos();
-                    }
-
-                    if (grupoData.content && quill.root.innerHTML !== grupoData.content && !quill.hasFocus()) {
-                        quill.root.innerHTML = grupoData.content;
-                        verificarChecklistSubtitulos();
-                    }
-                }
-            }
-        }, 3000);
-
-        window.addEventListener('storage', function (event) {
-            if (!currentData.grade || !currentData.team) return;
-
-            const key = `trabalho_grupo_${currentData.grade}_${currentData.team}`;
-            if (event.key === key) {
-                const grupoData = readStorage(key, null);
-                if (!grupoData) return;
-
-                const titleInput = document.getElementById('workTitle');
-                if (titleInput && titleInput.value !== (grupoData.title || '')) {
-                    titleInput.value = grupoData.title || '';
-                    renderizarTitulosSugeridos();
-                }
-
-                if (grupoData.content && quill.root.innerHTML !== grupoData.content) {
-                    quill.root.innerHTML = grupoData.content;
-                    verificarChecklistSubtitulos();
-                }
-            }
-
-            const chatKey = `chat_grupo_${currentData.grade}_${currentData.team}`;
-            if (event.key === chatKey) {
-                carregarMensagensChat();
-            }
-        });
-
-        document.getElementById('saveDraftBtn').addEventListener('click', function() {
-            const title = document.getElementById('workTitle').value.trim();
-            const content = quill.root.innerHTML;
-
-            if (!title && quill.getText().trim().length === 0) {
-                mostrarAviso("O editor está vazio. Escreva algo antes de salvar!", "warning");
-                return;
-            }
-
-            const savedAt = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            const sharedKey = `trabalho_grupo_${currentData.grade}_${currentData.team}`;
-
-            const payload = {
-                title,
-                content,
-                score: currentData.score,
-                savedAt,
-                savedBy: currentData.studentName
-            };
-
-            writeStorage(sharedKey, payload);
-
-            editorDirty = false;
-            document.getElementById('saveStatusInfo').innerText = `Salvo às ${savedAt} por ${currentData.studentName}`;
-            mostrarAviso("💾 Rascunho formatado salvo com sucesso para a equipe!", "success");
-        });
-
-        function enviarMensagemChat() {
-            const chatInput = document.getElementById('chatInput');
-            const txt = chatInput.value.trim();
-            if (!txt) return;
-
-            const chatKey = `chat_grupo_${currentData.grade}_${currentData.team}`;
-            const mensagens = readStorage(chatKey, []);
-            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-            const arr = Array.isArray(mensagens) ? mensagens : [];
-            arr.push({ author: currentData.studentName, text: txt, time });
-            writeStorage(chatKey, arr);
-
-            chatInput.value = '';
-            carregarMensagensChat();
-            atualizarListaMembros();
-        }
-
-        document.getElementById('sendChatBtn').addEventListener('click', enviarMensagemChat);
-        document.getElementById('chatInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                enviarMensagemChat();
-            }
-        });
-
-        document.getElementById('evaluateBtn').addEventListener('click', function() {
-            const plain = quill.getText().trim();
-            const lower = plain.toLowerCase();
-            const words = plain.split(/\s+/).filter(Boolean).length;
-
-            if (plain.length < 20) {
-                mostrarAviso("Escreva um texto mais completo antes de pedir a pré-avaliação com IA.", "warning");
-                return;
-            }
-
-            const hasIntro = lower.includes('introdução teórica') || lower.includes('introducao teorica') || lower.includes('1. introdução') || lower.includes('1. introducao');
-            const hasApp = lower.includes('aplicação tecnológica') || lower.includes('aplicacao tecnologica') || lower.includes('2. aplicação') || lower.includes('2. aplicacao');
-            const hasConc = lower.includes('conclusão crítica') || lower.includes('conclusao critica') || lower.includes('3. conclusão') || lower.includes('3. conclusao');
-
-            let notaIntro = hasIntro ? (words > 60 ? 3.4 : 2.7) : (words > 40 ? 2.2 : 1.6);
-            let notaApp = hasApp ? (words > 80 ? 3.4 : 2.7) : (words > 50 ? 2.2 : 1.6);
-            let notaConc = hasConc ? (words > 100 ? 3.1 : 2.5) : (words > 60 ? 2.0 : 1.5);
-
-            const score = Math.min(10.0, Math.max(5.0, notaIntro + notaApp + notaConc)).toFixed(1);
-            currentData.score = score;
-
-            let dicas = [];
-            if (!hasIntro) dicas.push("Incluir o subtítulo '1. Introdução Teórica'.");
-            if (!hasApp) dicas.push("Incluir o subtítulo '2. Aplicação Tecnológica e Prática' com exemplos reais.");
-            if (!hasConc) dicas.push("Incluir o subtítulo '3. Conclusão Crítica' com a opinião do grupo.");
-            if (words < 90) dicas.push("Desenvolver um pouco mais os parágrafos explicando os conceitos físicos.");
-            if (dicas.length === 0) dicas.push("Excelente estrutura! Os 3 subtítulos obrigatórios foram contemplados.");
-
-            const feedbackBox = document.getElementById('aiFeedbackBox');
-            feedbackBox.classList.remove('hidden');
-            feedbackBox.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-                    <strong style="color:var(--warning);">🤖 Parecer da Pré-Avaliação IA</strong>
-                    <strong style="color:var(--success);font-size:0.95rem;">Nota Estimada: ${score} / 10.0</strong>
-                </div>
-                <p style="color:var(--text-muted);margin-bottom:0.4rem;">Extensão atual: <strong>${words} palavras</strong> | Subtítulos identificados: <strong>${[hasIntro, hasApp, hasConc].filter(Boolean).length}/3</strong></p>
-                <p style="color:var(--text);"><strong>Recomendações:</strong> ${dicas.join(' ')}</p>
-            `;
-
-            mostrarAviso(`🤖 Pré-Avaliação concluída! Nota Estimada: ${score} / 10.0`, "success");
-        });
-
-        document.getElementById('submitBtn').addEventListener('click', function() {
-            const title = document.getElementById('workTitle').value.trim();
-            const contentHTML = quill.root.innerHTML;
-            const textLength = quill.getText().trim().length;
-
-            if (!title || textLength === 0) {
-                mostrarAviso("Preencha o Título e o Conteúdo do Trabalho antes de enviar!", "warning");
-                return;
-            }
-
-            const savedAt = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            const sharedKey = `trabalho_grupo_${currentData.grade}_${currentData.team}`;
-
-            const payload = {
-                title,
-                content: contentHTML,
-                score: currentData.score,
-                savedAt,
-                savedBy: currentData.studentName,
-                submitted: true
-            };
-
-            writeStorage(sharedKey, payload);
-
-            let membrosGlobais = readStorage('portal_fisica_membros_globais', {});
-            let chaveGrupo = getGroupKey(currentData.grade, currentData.team);
-            const membros = Array.isArray(membrosGlobais[chaveGrupo]) ? membrosGlobais[chaveGrupo].join(', ') : currentData.studentName;
-
-            const scoreText = currentData.score ? `${currentData.score} / 10.0` : 'Pendente';
-            const turmaNome = `${currentData.grade}º Ano`;
-
-            document.getElementById('summaryReport').innerHTML = `
-                <p><strong>Enviado por:</strong> ${currentData.studentName}</p>
-                <p><strong>Membros da Equipe (${currentData.team}):</strong> ${membros}</p>
-                <p><strong>Turma:</strong> ${turmaNome}</p>
-                <p><strong>Subtema:</strong> ${currentData.subtopicObj.desc}</p>
-                <p><strong>Título:</strong> ${title}</p>
-                <p><strong>Nota Estimada:</strong> ${scoreText}</p>
-                <hr style="border-color: var(--border); margin: 0.8rem 0;">
-                <div>${contentHTML}</div>
-            `;
-
-            document.getElementById('workspaceSection').classList.add('hidden');
-            document.getElementById('successSection').classList.remove('hidden');
-            window.scrollTo(0, 0);
-
-            const plainText = quill.getText();
-            const subject = encodeURIComponent(`[Trabalho Física em Grupo] ${turmaNome} - ${currentData.team}`);
-            const body = encodeURIComponent(`Professor Jouilson,\n\nSegue o trabalho da equipe:\n\nMembros: ${membros}\nTurma: ${turmaNome}\nEquipe: ${currentData.team}\nSubtema: ${currentData.subtopicObj.desc}\nTítulo: ${title}\nNota: ${scoreText}\n\nConteúdo:\n${plainText}`);
-
-            document.getElementById('emailBtn').onclick = function() {
-                window.location.href = `mailto:profjouilson@gmail.com?subject=${subject}&body=${body}`;
-            };
-        });
-
-        function voltarParaEditor() {
-            document.getElementById('successSection').classList.add('hidden');
-            document.getElementById('workspaceSection').classList.remove('hidden');
-        }
-
-        function copiarRelatorio() {
-            const texto = document.getElementById('summaryReport').innerText;
-            navigator.clipboard.writeText(texto).then(() => {
-                mostrarAviso("📋 Relatório copiado para a área de transferência!", "success");
-            });
-        }
-
-        function renderizarPainelProfessor() {
-            const grade = document.getElementById('teacherGradeFilter').value;
-            const info = configTurmas[grade];
-            const container = document.getElementById('teacherTeamsContainer');
-            let membrosGlobais = readStorage('portal_fisica_membros_globais', {});
-
-            container.innerHTML = '';
-
-            Object.keys(info.teams).forEach(teamName => {
-                const chave = `${grade}_${teamName}`;
-                const listaMembros = Array.isArray(membrosGlobais[chave]) ? membrosGlobais[chave] : [];
-                const rascunho = readStorage(`trabalho_grupo_${chave}`, {});
-
-                const card = document.createElement('div');
-                card.style.cssText = 'background:#0f172a;border:1px solid var(--border);border-radius:10px;padding:1rem;';
-                card.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-                        <strong style="color:var(--accent);">${teamName} (${listaMembros.length}/${info.maxPerTeam} alunos)</strong>
-                        <span style="font-size:0.75rem;color:${rascunho.submitted ? 'var(--success)' : 'var(--warning)'};">
-                            ${rascunho.submitted ? '✅ Entregue' : (rascunho.title ? '📝 Em Rascunho' : '⏳ Aguardando')}
-                        </span>
-                    </div>
-                    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;">${info.teams[teamName].desc}</p>
-                    <p style="font-size:0.8rem;margin-bottom:0.4rem;"><strong>Membros:</strong> ${listaMembros.length ? listaMembros.join(', ') : 'Nenhum aluno'}</p>
-                    <p style="font-size:0.8rem;margin-bottom:0.6rem;"><strong>Título:</strong> ${rascunho.title || '-'} | <strong>Nota IA:</strong> ${rascunho.score || '-'}</p>
-                    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
-                        <button type="button" class="nav-btn" onclick="limparEquipeProfessor('${grade}', '${teamName}')">🗑️ Limpar Vagas da Equipe</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function limparEquipeProfessor(grade, teamName) {
-            let membrosGlobais = readStorage('portal_fisica_membros_globais', {});
-            const chave = `${grade}_${teamName}`;
-            const alunos = Array.isArray(membrosGlobais[chave]) ? membrosGlobais[chave] : [];
-
-            alunos.forEach(nome => {
-                if (nome) {
-                    localStorage.removeItem(`aluno_registrado_${normalizeName(nome)}`);
-                }
-            });
-
-            delete membrosGlobais[chave];
-            writeStorage('portal_fisica_membros_globais', membrosGlobais);
-
-            renderizarPainelProfessor();
-            popularEquipes();
-            mostrarAviso(`Vagas da ${teamName} (${grade}º Ano) liberadas com sucesso!`, "success");
-        }
-
-        document.getElementById('teacherGradeFilter').value = '9';
-        popularEquipes();
-    </script>
+        tabPortal.classList.add("hidden");
+        tabProfessor.classList.remove("hidden");
+        btnPortal.classList.remove("active");
+        btnProfessor.classList.add("active");
+      } else {
+        tabProfessor.classList.add("hidden");
+        tabPortal.classList.remove("hidden");
+        btnProfessor.classList.remove("active");
+        btnPortal.classList.add("active");
+      }
+    }
+
+    function entrarNaSala() {
+      const nome = document.getElementById("studentName").value.trim();
+      const grade = document.getElementById("gradeSelect").value;
+      const team = document.getElementById("teamSelect").value;
+
+      if (!nome) {
+        mostrarAviso("Digite o seu nome antes de entrar.", "warning");
+        return;
+      }
+
+      if (!grade || !team) {
+        mostrarAviso("Selecione turma e equipe.", "warning");
+        return;
+      }
+
+      mostrarAviso("Aluno entrou na sala com sucesso.", "success");
+      console.log("Aluno:", nome, "Turma:", grade, "Equipe:", team);
+    }
+
+    document.getElementById("gradeSelect").addEventListener("change", function () {
+      const grade = this.value;
+      const teamSelect = document.getElementById("teamSelect");
+      teamSelect.innerHTML = "";
+
+      if (!grade) {
+        teamSelect.innerHTML = '<option value="">-- Selecione a turma primeiro --</option>';
+        return;
+      }
+
+      const equipes = {
+        "9": ["Equipe 1", "Equipe 2", "Equipe 3", "Equipe 4", "Equipe 5"],
+        "1": ["Equipe 1", "Equipe 2", "Equipe 3", "Equipe 4", "Equipe 5"],
+        "2": ["Equipe 1", "Equipe 2", "Equipe 3", "Equipe 4", "Equipe 5"],
+        "3": ["Equipe 1", "Equipe 2", "Equipe 3", "Equipe 4", "Equipe 5"]
+      };
+
+      const optionDefault = document.createElement("option");
+      optionDefault.value = "";
+      optionDefault.textContent = "-- Selecione a equipe --";
+      teamSelect.appendChild(optionDefault);
+
+      (equipes[grade] || []).forEach(equipe => {
+        const option = document.createElement("option");
+        option.value = equipe;
+        option.textContent = equipe;
+        teamSelect.appendChild(option);
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      inicializarBotaoProfessor();
+    });
+  </script>
 </body>
 </html>
