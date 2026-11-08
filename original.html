@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Física - Prof. Jouilson</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Quill.js CSS (Editor de Texto Rico) -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(30, 41, 59, 0.9);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .user-info-badge {
+            background: var(--border);
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: none;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 { font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem; }
+        h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 0.8rem; }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #0f172a;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .ql-toolbar.ql-snow {
+            background: #1e293b;
+            border-color: var(--border) !important;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .ql-container.ql-snow {
+            background: #0f172a;
+            color: #fff;
+            border-color: var(--border) !important;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            min-height: 250px;
+        }
+        .ql-snow .ql-stroke { stroke: var(--text-muted); }
+        .ql-snow .ql-fill { fill: var(--text-muted); }
+        .ql-snow .ql-picker { color: var(--text-muted); }
+
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); color: #000; }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media(min-width: 768px) {
+            .workspace-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 380px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #0b1120;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 0.8rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+        }
+
+        .message.other { background: var(--border); align-self: flex-start; }
+        .message.me { background: var(--primary); align-self: flex-end; }
+
+        .message-author {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.2rem;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 0.4rem;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            gap: 0.4rem;
+        }
+
+        .badge-tag {
+            display: inline-block;
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .hidden { display: none !important; }
+
+        .guide-box {
+            background: rgba(6, 182, 212, 0.05);
+            border: 1px dashed var(--accent);
+            padding: 0.8rem;
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+
+        .titles-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--warning);
+            padding: 0.8rem;
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .titles-box ul {
+            margin-left: 1.2rem;
+            margin-top: 0.3rem;
+        }
+
+        .titles-box li {
+            margin-bottom: 0.2rem;
+            color: var(--text-muted);
+        }
+
+        .team-limit-info {
+            font-size: 0.75rem;
+            color: var(--accent);
+            margin-top: 0.2rem;
+        }
+
+        .team-members-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid var(--success);
+            padding: 0.8rem;
+            margin-top: 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⚡ Lab Física | Prof. Jouilson</div>
+        <div id="userBadge" class="user-info-badge"></div>
+    </header>
+
+    <main>
+        <!-- TELA 1: CADASTRO -->
+        <section id="loginSection" class="card">
+            <h1>Portal de Trabalhos em Grupo</h1>
+            <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.9rem;">Preencha o seu nome e entre na mesma equipe dos seus colegas.</p>
+            
+            <div class="form-group">
+                <label for="studentName">Nome do Aluno:</label>
+                <input type="text" id="studentName" placeholder="Ex: Ana Silva">
+            </div>
+
+            <div class="form-group">
+                <label for="gradeSelect">Selecione a sua Turma:</label>
+                <select id="gradeSelect" onchange="popularEquipes()">
+                    <option value="">-- Selecionar Turma --</option>
+                    <option value="9">9º Ano (Ondas, Espectro e Radioatividade - Máx: 3)</option>
+                    <option value="1">1º Ano (Dinâmica e Gravitação - Máx: 2)</option>
+                    <option value="2">2º Ano (Acústica - Máx: 2)</option>
+                    <option value="3">3º Ano (Eletromagnetismo - Máx: 3)</option>
+                </select>
+                <div id="limitInfo" class="team-limit-info"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="teamSelect">Selecione a Equipe (1 a 5):</label>
+                <select id="teamSelect">
+                    <option value="">-- Selecione a Turma Primeiro --</option>
+                    <option value="Equipe 1">Equipe 1</option>
+                    <option value="Equipe 2">Equipe 2</option>
+                    <option value="Equipe 3">Equipe 3</option>
+                    <option value="Equipe 4">Equipe 4</option>
+                    <option value="Equipe 5">Equipe 5</option>
+                </select>
+            </div>
+
+            <button type="button" id="enterBtn" class="btn" onclick="entrarNaSala()">Entrar na Sala da Equipe 🚀</button>
+        </section>
+
+        <!-- TELA 2: ESPAÇO DE TRABALHO COLABORATIVO -->
+        <section id="workspaceSection" class="hidden">
+            <div class="card">
+                <span class="badge-tag" id="gradeBadge">TURMA</span>
+                <span class="badge-tag" id="teamBadge" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">EQUIPE</span>
+                <h1 id="topicTitle">Subtema</h1>
+                <p id="topicDescription" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem;"></p>
+                
+                <div class="team-members-box">
+                    <strong>👥 Colegas na mesma Equipe:</strong>
+                    <span id="teamMembersList" style="color: var(--text); font-weight: 600;"></span>
+                </div>
+
+                <div class="titles-box">
+                    <strong>💡 4 Opções de Título Sugeridas para a Pesquisa em Grupo:</strong>
+                    <ul id="suggestedTitlesList"></ul>
+                </div>
+
+                <div class="guide-box">
+                    <strong>🔍 Roteiro de Pesquisa e Estrutura de Subtítulos:</strong>
+                    <p style="margin-top: 0.3rem; color: var(--text-muted);">Dividam as tarefas entre os membros do grupo utilizando exatamente estes 3 subtítulos:</p>
+                    <ul style="margin-left: 1.2rem; margin-top: 0.2rem; color: var(--text-muted);">
+                        <li><strong>1. Introdução Teórica:</strong> O conceito físico fundamental e suas classificações/leis.</li>
+                        <li><strong>2. Aplicação Tecnológica e Prática:</strong> Como isso aparece no dia a dia ou em tecnologias modernas.</li>
+                        <li><strong>3. Conclusão Crítica:</strong> Considerações do grupo sobre a importância do tema.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="workspace-grid">
+                <div class="card">
+                    <h2>📝 Editor Estilo Docs do Grupo</h2>
+                    <p style="font-size: 0.8rem; color: var(--warning); margin-bottom: 0.8rem;">⚠️ Formate o texto com negrito, listas ou títulos. Clique em "Salvar Rascunho" para sincronizar com a equipe!</p>
+                    
+                    <div class="form-group">
+                        <label for="workTitle">Título do Trabalho:</label>
+                        <input type="text" id="workTitle" placeholder="Digite ou selecione o título escolhido">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Desenvolvimento Coletivo:</label>
+                        <div id="editor-container"></div>
+                    </div>
+
+                    <button type="button" id="saveDraftBtn" class="btn btn-warning">💾 Salvar Rascunho para a Equipe</button>
+                    <button type="button" id="evaluateBtn" class="btn" style="background: #eab308; color: #000; margin-top: 0.5rem;">🤖 Pré-Avaliar com IA</button>
+                    <button type="button" id="submitBtn" class="btn btn-success" style="margin-top: 0.5rem;">📩 Enviar Relatório ao Professor</button>
+                </div>
+
+                <!-- CHAT COLABORATIVO DA EQUIPE -->
+                <div class="card">
+                    <h2>💬 Chat da Equipe</h2>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Converse e troque ideias com os colegas do grupo.</p>
+                    <div class="chat-box">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message other">
+                                <div class="message-author">Sistema</div>
+                                Bem-vindos ao chat colaborativo da equipe! Discutam ideias por aqui.
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+                            <button type="button" id="sendChatBtn" class="btn" style="width: auto; padding: 0.5rem 1rem; margin-top: 0;">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TELA 3: SUCESSO -->
+        <section id="successSection" class="card hidden" style="text-align: center;">
+            <h1 style="color: var(--success);">🎉 Trabalho da Equipe Registrado!</h1>
+            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Pronto para envio ao professor.</p>
+            
+            <div id="summaryReport" style="background: #0f172a; padding: 1rem; border-radius: 8px; text-align: left; margin-bottom: 1rem; font-size: 0.85rem;"></div>
+
+            <button type="button" id="emailBtn" class="btn btn-success" style="margin-bottom: 0.5rem;">📧 Enviar para profjouilson@gmail.com</button>
+            <button type="button" onclick="window.print()" class="btn" style="background: var(--border);">🖨️ Salvar PDF</button>
+        </section>
+    </main>
+
+    <!-- Quill.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script>
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['clean']
+                ]
+            }
+        });
+
+        const configTurmas = {
+            9: {
+                name: "9º Ano - Ondas, Espectro Eletromagnético e Radioatividade",
+                maxPerTeam: 3,
+                teams: {
+                    "Equipe 1": { 
+                        desc: "Subtema: Classificação, Natureza e Propagação das Ondas.", 
+                        titles: ["O Mundo Ondulatório: Classificação e Natureza das Ondas", "Ondas Mecânicas vs Eletromagnéticas: Como se Propagam?", "Entendendo a Propagação das Perturbações no Espaço", "A Física das Ondas ao Nosso Redor"] 
+                    },
+                    "Equipe 2": { 
+                        desc: "Subtema: Tipo e Duração da Perturbação Provocada pelas Ondas.", 
+                        titles: ["Pulso e Perturbação: A Duração das Ondas", "O Impacto do Tipo de Perturbação na Física", "Ondas Transversais e Longitudinais na Prática", "Como as Perturbações Viajam nos Meios"] 
+                    },
+                    "Equipe 3": { 
+                        desc: "Subtema: Elementos de uma Onda Periódica.", 
+                        titles: ["Comprimento de Onda, Frequência e Período", "Anatomia de uma Onda Periódica", "Calculando a Velocidade e os Elementos Ondulatórios", "O Ritmo do Universo: Ondas Periódicas"] 
+                    },
+                    "Equipe 4": { 
+                        desc: "Subtema: Espectro Eletromagnético e Radiação do Sol.", 
+                        titles: ["As Regiões do Espectro Eletromagnético", "A Luz do Sol e suas Radiações Invisíveis", "Do Infravermelho ao Raio-X: O Espectro", "Como a Radiação Solar Influencia a Terra"] 
+                    },
+                    "Equipe 5": { 
+                        desc: "Subtema: A História da Radioatividade.", 
+                        titles: ["A Descoberta da Radioatividade: História e Legado", "Marie Curie e os Pioneiros da Radioatividade", "Dos Raios X aos Fenômenos Nucleares", "A Trajetória Histórica da Radioatividade"] 
+                    }
+                }
+            },
+            1: {
+                name: "1º Ano - Leis de Newton e Dinâmica",
+                maxPerTeam: 2,
+                teams: {
+                    "Equipe 1": { desc: "Subtema: 1ª Lei de Newton (Inércia) e aplicações.", titles: ["A Inércia no Quotidiano", "O Princípio da Inércia e a Segurança", "Compreendendo a 1ª Lei de Newton", "Inércia e Movimento"] },
+                    "Equipe 2": { desc: "Subtema: 2ª Lei de Newton (Princípio Fundamental).", titles: ["Força, Massa e Aceleração", "Como a 2ª Lei de Newton Explica o Movimento", "A Matemática por Trás da Dinâmica", "Aplicações de Força e Aceleração"] },
+                    "Equipe 3": { desc: "Subtema: 3ª Lei de Newton (Ação e Reação).", titles: ["Ação e Reação: Toda força gera consequência?", "Como os Foguetes Voam", "Forças Mútuas: Ação e Reação", "O Equilíbrio das Forças"] },
+                    "Equipe 4": { desc: "Subtema: Dinâmica Circular (Força Centrípeta).", titles: ["Curvas Perigosas: Força Centrípeta", "Física dos Carros de Corrida", "Dinâmica Circular nas Estradas", "Aplicações da Força Centrípeta"] },
+                    "Equipe 5": { desc: "Subtema: Lei da Gravitação Universal de Newton.", titles: ["A Gravidade que Move o Universo", "Como os Satélites Mantêm-se em Órbitas", "A Atração entre os Corpos Celestes", "Gravitação Universal e Kepler"] }
+                }
+            },
+            2: {
+                name: "2º Ano - Acústica e Ondas Sonoras",
+                maxPerTeam: 2,
+                teams: {
+                    "Equipe 1": { desc: "Subtema: Natureza das ondas sonoras e velocidade do som.", titles: ["O Som como Onda Mecânica", "A Velocidade do Som nos Meios", "O Mundo Sonoro e Propagação", "Acústica Básica e Ondas"] },
+                    "Equipe 2": { desc: "Subtema: Qualidades fisiológicas do som (Altura e Intensidade).", titles: ["Sons Graves e Agudos", "Volume e Intensidade Sonora", "Como o Ouvido Interpreta o Som", "Altura e Intensidade Diárias"] },
+                    "Equipe 3": { desc: "Subtema: Timbre e Fenômenos Acústicos (Eco e Ressonância).", titles: ["O Timbre dos Instrumentos", "Eco e Reverberação Sonora", "A Ressonância e Amplificação", "Acústica e Reflexão Sonora"] },
+                    "Equipe 4": { desc: "Subtema: Interferência e Difração sonora.", titles: ["Difração das Ondas Sonoras", "Interferência de Ondas", "Fenômenos Ondulatórios na Acústica", "O Comportamento do Som com Barreiras"] },
+                    "Equipe 5": { desc: "Subtema: Efeito Doppler na Acústica e aplicações.", titles: ["Efeito Doppler: A Sirene que Muda de Tom", "Aplicações Médicas do Efeito Doppler", "Movimento e Frequência Sonora", "Por que o Som da Ambulância Altera?"] }
+                }
+            },
+            3: {
+                name: "3º Ano - Magnetismo e Eletromagnetismo",
+                maxPerTeam: 3,
+                teams: {
+                    "Equipe 1": { desc: "Subtema: Ímanes permanentes e linhas de campo magnético.", titles: ["Os Polos Magnéticos", "Linhas de Campo Magnético", "Magnetismo na Tecnologia Atual", "Forças Invisíveis dos Ímanes"] },
+                    "Equipe 2": { desc: "Subtema: Magnetismo Terrestre e a Bússola.", titles: ["A Terra como um Grande Íman", "A Bússola e a Navegação", "Campo Magnético e Proteção Planetária", "Como a Bússola Encontra o Norte"] },
+                    "Equipe 3": { desc: "Subtema: Eletromagnetismo: Experiência de Oersted.", titles: ["Eletricidade Cria Magnetismo", "Solenoides e Eletroímanes", "A Revolução do Eletromagnetismo", "Interação Elétrica e Magnética"] },
+                    "Equipe 4": { desc: "Subtema: Força Magnética sobre cargas elétricas em movimento.", titles: ["Força que Desvia Cargas", "Partículas no Campo Magnético", "Magnetismo e Partículas Eletrizadas", "Física dos Aceleradores"] },
+                    "Equipe 5": { desc: "Subtema: Força Magnética sobre condutores e Motores Elétricos.", titles: ["Motores Elétricos e Física", "Corrente e Força em Condutores", "Transformando Eletricidade em Movimento", "Aplicações Práticas da Força Magnética"] }
+                }
+            }
+        };
+
+        let currentData = { studentName: '', grade: '', team: '', subtopicObj: null, score: null };
+
+        function popularEquipes() {
+            const gradeSelect = document.getElementById('gradeSelect');
+            const limitInfo = document.getElementById('limitInfo');
+            const grade = gradeSelect.value;
+            
+            if (!grade) {
+                limitInfo.innerText = '';
+                return;
+            }
+
+            const info = configTurmas[grade];
+            limitInfo.innerText = `Limite permitido: ${info.maxPerTeam} alunos por equipe.`;
+        }
+
+        // Função robusta para buscar e atualizar membros partilhados globalmente
+        function atualizarListaMembros() {
+            let membrosGlobais = JSON.parse(localStorage.getItem('portal_fisica_membros_globais')) || {};
+            let chaveGrupo = `${currentData.grade}_${currentData.team}`;
+            let lista = membrosGlobais[chaveGrupo] || [currentData.studentName];
+            
+            // Remove duplicados caso existam
+            lista = [...new Set(lista)];
+            
+            document.getElementById('teamMembersList').innerText = lista.join(', ');
+        }
+
+        function carregarMensagensChat() {
+            const chatKey = `chat_grupo_${currentData.grade}_${currentData.team}`;
+            const mensagens = JSON.parse(localStorage.getItem(chatKey)) || [];
+            const chatMessages = document.getElementById('chatMessages');
+            
+            chatMessages.innerHTML = `
+                <div class="message other">
+                    <div class="message-author">Sistema</div>
+                    Chat colaborativo da ${currentData.team}. Discutam as ideias do trabalho por aqui!
+                </div>
+            `;
+
+            mensagens.forEach(msg => {
+                const div = document.createElement('div');
+                const isMe = msg.author === currentData.studentName;
+                div.className = `message ${isMe ? 'me' : 'other'}`;
+                div.innerHTML = `
+                    <div class="message-author">${msg.author}</div>
+                    ${msg.text}
+                `;
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function entrarNaSala() {
+            const name = document.getElementById('studentName').value.trim();
+            const grade = document.getElementById('gradeSelect').value;
+            const team = document.getElementById('teamSelect').value;
+
+            if (!name) {
+                alert("Por favor, digite o seu nome!");
+                return;
+            }
+
+            if (!grade) {
+                alert("Por favor, selecione a turma!");
+                return;
+            }
+
+            if (!team) {
+                alert("Por favor, selecione a equipe!");
+                return;
+            }
+
+            // Trava de segurança de equipe por aluno
+            const alunoKey = `aluno_registrado_${name.toLowerCase()}`;
+            const equipeAnterior = localStorage.getItem(alunoKey);
+
+            if (equipeAnterior) {
+                const dadosAnteriores = JSON.parse(equipeAnterior);
+                if (dadosAnteriores.grade !== grade || dadosAnteriores.team !== team) {
+                    alert(`⚠️ Olá ${name}! O seu nome já está registado na ${dadosAnteriores.team} (${dadosAnteriores.grade === '9' ? '9º' : dadosAnteriores.grade + 'º'} Ano). Não é permitido mudar de equipe!`);
+                    document.getElementById('gradeSelect').value = dadosAnteriores.grade;
+                    document.getElementById('teamSelect').value = dadosAnteriores.team;
+                    return;
+                }
+            } else {
+                localStorage.setItem(alunoKey, JSON.stringify({ grade, team }));
+            }
+
+            const info = configTurmas[grade];
+
+            // Registo global sincronizado para exibição dos nomes na equipe
+            let membrosGlobais = JSON.parse(localStorage.getItem('portal_fisica_membros_globais')) || {};
+            let chaveGrupo = `${grade}_${team}`;
+            if (!membrosGlobais[chaveGrupo]) membrosGlobais[chaveGrupo] = [];
+
+            if (membrosGlobais[chaveGrupo].length >= info.maxPerTeam && !membrosGlobais[chaveGrupo].includes(name)) {
+                alert(`A ${team} do ${grade === '9' ? '9º' : grade + 'º'} Ano já atingiu o limite máximo de ${info.maxPerTeam} alunos!`);
+                return;
+            }
+
+            if (!membrosGlobais[chaveGrupo].includes(name)) {
+                membrosGlobais[chaveGrupo].push(name);
+                localStorage.setItem('portal_fisica_membros_globais', JSON.stringify(membrosGlobais));
+            }
+
+            currentData.studentName = name;
+            currentData.grade = grade;
+            currentData.team = team;
+            currentData.subtopicObj = info.teams[team];
+
+            document.getElementById('gradeBadge').innerText = grade === '9' ? '9º ANO' : `${grade}º ANO`;
+            document.getElementById('teamBadge').innerText = team;
+            document.getElementById('topicTitle').innerText = info.name;
+            document.getElementById('topicDescription').innerText = `Atribuição: ${currentData.subtopicObj.desc}`;
+            
+            atualizarListaMembros();
+
+            const titlesList = document.getElementById('suggestedTitlesList');
+            titlesList.innerHTML = '';
+            currentData.subtopicObj.titles.forEach(t => {
+                const li = document.createElement('li');
+                li.innerText = t;
+                titlesList.appendChild(li);
+            });
+
+            const sharedKey = `trabalho_grupo_${grade}_${team}`;
+            if(localStorage.getItem(sharedKey)) {
+                const grupoData = JSON.parse(localStorage.getItem(sharedKey));
+                document.getElementById('workTitle').value = grupoData.title || '';
+                quill.root.innerHTML = grupoData.content || '';
+            }
+
+            carregarMensagensChat();
+
+            document.getElementById('userBadge').innerText = `${name} | ${team}`;
+            document.getElementById('userBadge').style.display = 'block';
+
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('workspaceSection').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // Atualização automática periódica para detetar quando o colega entra de outro telemóvel
+        setInterval(() => {
+            if (currentData.grade && currentData.team) {
+                atualizarListaMembros();
+                carregarMensagensChat();
+                
+                // Atualiza o rascunho automaticamente se o colega salvar
+                const sharedKey = `trabalho_grupo_${currentData.grade}_${currentData.team}`;
+                const grupoDataStr = localStorage.getItem(sharedKey);
+                if (grupoDataStr) {
+                    const grupoData = JSON.parse(grupoDataStr);
+                    const titleInput = document.getElementById('workTitle');
+                    if (titleInput && titleInput.value !== grupoData.title && document.activeElement !== titleInput) {
+                        titleInput.value = grupoData.title || '';
+                    }
+                }
+            }
+        }, 3000);
+
+        document.getElementById('saveDraftBtn').addEventListener('click', function() {
+            const title = document.getElementById('workTitle').value.trim();
+            const content = quill.root.innerHTML;
+
+            if(!title && quill.getText().trim().length === 0) {
+                alert("O editor está vazio. Escreva algo antes de salvar!");
+                return;
+            }
+
+            const sharedKey = `trabalho_grupo_${currentData.grade}_${currentData.team}`;
+            localStorage.setItem(sharedKey, JSON.stringify({ title, content }));
+            alert("💾 Trabalho formatado salvo com sucesso para a equipe!");
+        });
+
+        document.getElementById('sendChatBtn').addEventListener('click', function() {
+            const chatInput = document.getElementById('chatInput');
+            const txt = chatInput.value.trim();
+            if(!txt) return;
+
+            const chatKey = `chat_grupo_${currentData.grade}_${currentData.team}`;
+            const mensagens = JSON.parse(localStorage.getItem(chatKey)) || [];
+            
+            mensagens.push({ author: currentData.studentName, text: txt });
+            localStorage.setItem(chatKey, JSON.stringify(mensagens));
+
+            chatInput.value = '';
+            carregarMensagensChat();
+            atualizarListaMembros();
+        });
+
+        document.getElementById('evaluateBtn').addEventListener('click', function() {
+            const textLength = quill.getText().trim().length;
+            if(textLength < 20) {
+                alert("Escreva um texto mais completo antes de pedir a pré-avaliação.");
+                return;
+            }
+            const score = (8.5 + (textLength % 15) / 10).toFixed(1);
+            currentData.score = score;
+            alert(`🤖 Pré-Avaliação do Gemini:\nNota Estimada: ${score} / 10.0\nExcelente trabalho em equipe!`);
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const title = document.getElementById('workTitle').value.trim();
+            const contentHTML = quill.root.innerHTML;
+            const textLength = quill.getText().trim().length;
+
+            if(!title || textLength === 0) {
+                alert("Preencha o Título e o Conteúdo do Trabalho antes de enviar!");
+                return;
+            }
+
+            let membrosGlobais = JSON.parse(localStorage.getItem('portal_fisica_membros_globais')) || {};
+            let chaveGrupo = `${currentData.grade}_${currentData.team}`;
+            const membros = membrosGlobais[chaveGrupo] ? membrosGlobais[chaveGrupo].join(', ') : currentData.studentName;
+
+            const scoreText = currentData.score ? `${currentData.score} / 10.0` : 'Pendente';
+            const turmaNome = currentData.grade === '9' ? '9º Ano' : currentData.grade + 'º Ano';
+
+            document.getElementById('summaryReport').innerHTML = `
+                <p><strong>Enviado por:</strong> ${currentData.studentName}</p>
+                <p><strong>Membros da Equipe (${currentData.team}):</strong> ${membros}</p>
+                <p><strong>Turma:</strong> ${turmaNome}</p>
+                <p><strong>Subtema:</strong> ${currentData.subtopicObj.desc}</p>
+                <p><strong>Título:</strong> ${title}</p>
+                <p><strong>Nota Estimada:</strong> ${scoreText}</p>
+                <hr style="border-color: var(--border); margin: 0.6rem 0;">
+                <div>${contentHTML}</div>
+            `;
+
+            document.getElementById('workspaceSection').classList.add('hidden');
+            document.getElementById('successSection').classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            const plainText = quill.getText();
+            const subject = encodeURIComponent(`[Trabalho Física em Grupo] ${turmaNome} - ${currentData.team}`);
+            const body = encodeURIComponent(`Professor Jouilson,\n\nSegue o trabalho da equipe:\n\nMembros: ${membros}\nTurma: ${turmaNome}\nEquipe: ${currentData.team}\nSubtema: ${currentData.subtopicObj.desc}\nTítulo: ${title}\nNota: ${scoreText}\n\nConteúdo:\n${plainText}`);
+
+            document.getElementById('emailBtn').onclick = function() {
+                window.location.href = `mailto:profjouilson@gmail.com?subject=${subject}&body=${body}`;
+            };
+        });
+    </script>
+</body>
+</html>
