@@ -444,15 +444,43 @@
         document.getElementById('pdfBtn2').addEventListener('click', downloadPDF);
 
         // ENVIO DE E-MAIL real
-        async function sendEmail() {
-            const statusEl = document.getElementById('emailStatus');
+        // ---------- ENVIO DE E-MAIL DIRETO COM FORMSUBMIT ----------
+        async function sendWorkByEmail() {
+            const statusEl = document.getElementById('email-status');
+            if (statusEl) statusEl.innerText = '⏳ Enviando trabalho para o e-mail...';
             try {
-                const d = await api('/api/send-email', { method:'POST', body: JSON.stringify({ grade: currentData.grade, teamName: currentData.team }) });
-                if (d.ok) { statusEl.innerText = "✅ E-mail enviado! (1ª vez: professor recebe e-mail de confirmação da FormSubmit — clica em 'Activate Form' uma vez)"; statusEl.style.color = '#6ee7b7'; return true; }
-                else { statusEl.innerText = "⚠️ Falha no envio: " + (d.error||''); statusEl.style.color = '#fca5a5'; return false; }
-            } catch(e) { statusEl.innerText = "⚠️ Erro de conexão: " + e.message; statusEl.style.color = '#fca5a5'; return false; }
+                await saveWorkSilently();
+                const team = currentTeam || {};
+                
+                const response = await fetch('https://formsubmit.co/ajax/profjouilson@gmail.com', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Accept': 'application/json' 
+                    },
+                    body: JSON.stringify({
+                        _subject: `Trabalho Concluído: ${team.selectedTitle || 'Relatório'} (${team.name || 'Equipe'})`,
+                        _template: 'table',
+                        Equipe: team.name || '-',
+                        Ano: (team.grade || currentUser.grade || '-') + 'º Ano',
+                        Tema: team.topic?.topic || '-',
+                        Membros: (team.members || []).join(', ') || '-',
+                        Conteudo: document.getElementById('docs-editor')?.innerText || '-'
+                    })
+                });
+                
+                const data = await response.json();
+                if (response.ok || data.success === "true" || data.success === true) {
+                    if (statusEl) statusEl.innerText = '✅ E-mail enviado com sucesso para o professor!';
+                    return true;
+                } else {
+                    throw new Error(data.message || 'Erro ao enviar pelo FormSubmit.');
+                }
+            } catch (error) {
+                if (statusEl) statusEl.innerText = '⚠️ O trabalho foi salvo, mas o e-mail falhou: ' + error.message;
+                return false;
+            }
         }
-        document.getElementById('emailBtn').addEventListener('click', sendEmail);
 
         // Submeter
         document.getElementById('submitBtn').addEventListener('click', async () => {
